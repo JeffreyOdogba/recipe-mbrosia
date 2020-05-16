@@ -4,9 +4,10 @@ let User = require("../models/user.model");
 router.route("/signup").post((req, res) => {
   const dateCreated = Date.now().toLocaleString();
 
-  const { username, password, profileImage, accountType } = req.body;
+  const { fullname, username, password, profileImage, accountType } = req.body;
 
   const newUser = new User({
+    fullname,
     username,
     password,
     profileImage,

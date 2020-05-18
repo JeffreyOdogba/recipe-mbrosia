@@ -20,4 +20,6 @@ router.route("/signup").post((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.route("/login").post((req, res) => {});
+
 module.exports = router;

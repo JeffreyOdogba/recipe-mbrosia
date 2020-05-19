@@ -1,8 +1,23 @@
-import React from "react";
-import { ImageBackground, StyleSheet, Text, View, Button } from "react-native";
+import React, { useState } from "react";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import Modal from "react-native-modal";
+import LoginDialog from "./patial-screen/LoginForm";
 const welcome_1 = require("../assets/welcome_1.jpg");
 
 function WelcomeScreen(props) {
+  const [visible, setVisible] = useState(false);
+
+  const toggleModal = () => {
+    setVisible(!visible);
+  };
+
   return (
     <ImageBackground source={welcome_1} style={styles.background}>
       <View>
@@ -15,10 +30,16 @@ function WelcomeScreen(props) {
       </View>
 
       <View style={styles.loginBtn}>
-        <Button title="Login" />
+        <Button title="Login" onPress={toggleModal} />
+        <Modal isVisible={visible} onBackdropPress={() => setVisible(false)}>
+          <LoginDialog closemodel={toggleModal} />
+        </Modal>
       </View>
+
       <View style={styles.signupBtn}>
-        <Text style={styles.signUplink}> SIGN UP </Text>
+        <TouchableOpacity>
+          <Text style={styles.signUplink}> SIGN UP </Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -36,7 +57,6 @@ const styles = StyleSheet.create({
   },
   loginBtn: {
     position: "absolute",
-    backgroundColor: "red",
     bottom: 90,
     width: 270,
   },

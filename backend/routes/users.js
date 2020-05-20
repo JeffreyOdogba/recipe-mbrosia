@@ -8,6 +8,7 @@ router.route("/signup").post((req, res) => {
 
   const newUser = new User({
     fullname,
+    email,
     username,
     password,
     profileImage,

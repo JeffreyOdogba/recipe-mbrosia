@@ -11,7 +11,7 @@ import Modal from "react-native-modal";
 import LoginDialog from "./patial-screen/LoginForm";
 const welcome_1 = require("../assets/welcome_1.jpg");
 
-function WelcomeScreen(props) {
+function WelcomeScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
 
   const toggleModal = () => {
@@ -38,7 +38,14 @@ function WelcomeScreen(props) {
 
       <View style={styles.signupBtn}>
         <TouchableOpacity>
-          <Text style={styles.signUplink}> SIGN UP </Text>
+          <Text
+            style={styles.signUplink}
+            onPress={() => {
+              navigation.navigate("SignUpForm");
+            }}
+          >
+            S I G N U P
+          </Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

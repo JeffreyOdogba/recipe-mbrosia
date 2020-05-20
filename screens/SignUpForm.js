@@ -7,14 +7,16 @@ import {
   TextInput,
   Alert,
   Picker,
+  PickerIOS,
 } from "react-native";
 import { useForm } from "react-hook-form";
 import Constants from "expo-constants";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 function SignUpForm(props) {
   const [selectedValue, setSelectedValue] = useState("Watcher");
   const { register, setValue, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => Alert.alert("Form Data", JSON.stringify(data));
+  const onSubmit = (data) => console.warn(data);
 
   useEffect(() => {
     register({ name: "fullname" }, { required: true });
@@ -26,69 +28,112 @@ function SignUpForm(props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}> Fullname</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Mbrosia, The Sauce to the heart</Text>
+      </View>
+
       <TextInput
+        placeholder="Full Name"
+        ref={register}
         style={styles.input}
         onChange={(text) => setValue("fullname", text)}
       />
-      <Text style={styles.label}> Email</Text>
       <TextInput
+        placeholder="Email"
+        ref={register}
         style={styles.input}
         onChange={(text) => setValue("email", text)}
       />
-      <Text style={styles.label}> Username</Text>
       <TextInput
+        placeholder="Username"
+        ref={register}
         style={styles.input}
         onChange={(text) => setValue("username", text)}
       />
-      <Text style={styles.label}> Password</Text>
       <TextInput
+        placeholder="Password"
+        ref={register}
         style={styles.input}
         onChange={(text) => setValue("password", text)}
       />
-      <Text style={styles.label}> Choose Account To Have</Text>
-      <Picker
-        selectedValue={selectedValue}
-        style={{ height: 50, width: 150 }}
-        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-      >
-        <Picker.Item label="Watcher" value="Watcher" />
-        <Picker.Item label="Creator" value="Creator" />
-      </Picker>
 
-      <View style={styles.button}>
-        <Button title="Sign Up" onPress={handleSubmit(onSubmit)} />
+      <View style={styles.optionsContainer}>
+        <Picker
+          mode="dropdown"
+          itemStyle={{
+            height: 70,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          selectedValue={selectedValue}
+          style={styles.options}
+          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+        >
+          <Picker.Item label="Watcher" value="Watcher" />
+          <Picker.Item label="Creator" value="Creator" />
+        </Picker>
       </View>
+      <TouchableOpacity>
+        <View style={styles.button}>
+          <Text
+            title="Sign Up"
+            style={styles.buttonText}
+            onPress={handleSubmit(onSubmit)}
+          >
+            S I G N U P
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  optionsContainer: {},
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  options: {
+    color: "black",
+    backgroundColor: "white",
+    padding: 10,
+    margin: 20,
+  },
+  header: {
+    alignItems: "center",
+    padding: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    color: "white",
+  },
   label: {
     color: "white",
     margin: 20,
     marginLeft: 0,
   },
   button: {
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 40,
-    color: "white",
     backgroundColor: "#ec5990",
-    height: 40,
+    height: 50,
     borderRadius: 4,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
-    padding: 8,
+    padding: 5,
     backgroundColor: "#0e101c",
   },
   input: {
     backgroundColor: "white",
-    borderColor: "none",
-    height: 40,
+    height: 50,
     padding: 10,
-    borderRadius: 4,
+    margin: 20,
+    borderRadius: 10,
   },
 });
 

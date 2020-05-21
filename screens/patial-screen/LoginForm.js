@@ -1,4 +1,3 @@
-import Modal from "react-native-modal";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -9,17 +8,18 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import { useForm } from "react-hook-form";
+//import { useForm } from "react-hook-form";
 import Constants from "expo-constants";
 
-function LoginDialog(props) {
-  const { register, setValue, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => Alert.alert("Form Data", JSON.stringify(data));
+const LoginDialog = (props) => {
+  //const { register, setValue, handleSubmit, errors } = useForm();
 
-  useEffect(() => {
-    register({ name: "username" }, { required: true });
-    register({ name: "password" });
-  }, [register]);
+  const [username, setUsername] = useState("Jeff");
+  const [password, setPassword] = useState("LOL");
+
+  const handleSubmit = () => {
+    console.log(username + " Test");
+  };
 
   return (
     <View style={styles.container}>
@@ -30,23 +30,25 @@ function LoginDialog(props) {
         <Text style={styles.headerText}>Mbrosia, Will Show You How!</Text>
       </View>
       <TextInput
-        placeholder="Username"
         style={styles.input}
-        onChange={(text) => setValue("username", text)}
+        placeholder="Username"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
       />
       <TextInput
         placeholder="Password"
+        value={password}
         style={styles.input}
-        onChange={(text) => setValue("password", text)}
+        onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity onPress={handleSubmit}>
         <View style={styles.button}>
-          <Text style={styles.buttonText}>S I G N U P</Text>
+          <Text style={styles.buttonText}>L O G I N</Text>
         </View>
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   header: {

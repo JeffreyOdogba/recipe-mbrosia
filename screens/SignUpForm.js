@@ -15,16 +15,14 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 function SignUpForm(props) {
   const [selectedValue, setSelectedValue] = useState("Watcher");
-  const { register, setValue, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => console.warn(data);
+  const [fullname, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    register({ name: "fullname" }, { required: true });
-    register({ name: "email" }, { required: true });
-    register({ name: "username" }, { required: true });
-    register({ name: "password" }, { required: true });
-    register({ name: "accountType" }, { required: true });
-  }, [register]);
+  const handleSubmit = () => {
+    console.log(selectedValue + " Test");
+  };
 
   return (
     <View style={styles.container}>
@@ -34,27 +32,27 @@ function SignUpForm(props) {
 
       <TextInput
         placeholder="Full Name"
-        ref={register}
         style={styles.input}
-        onChange={(text) => setValue("fullname", text)}
+        value={fullname}
+        onChangeText={(text) => setFullName(text)}
       />
       <TextInput
         placeholder="Email"
-        ref={register}
         style={styles.input}
-        onChange={(text) => setValue("email", text)}
+        value={email}
+        onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         placeholder="Username"
-        ref={register}
         style={styles.input}
-        onChange={(text) => setValue("username", text)}
+        value={username}
+        onChangeText={(text) => setUsername(text)}
       />
       <TextInput
         placeholder="Password"
-        ref={register}
         style={styles.input}
-        onChange={(text) => setValue("password", text)}
+        value={password}
+        onChangeText={(text) => setPassword(text)}
       />
 
       <View style={styles.optionsContainer}>
@@ -78,7 +76,7 @@ function SignUpForm(props) {
           <Text
             title="Sign Up"
             style={styles.buttonText}
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleSubmit}
           >
             S I G N U P
           </Text>

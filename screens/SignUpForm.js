@@ -5,24 +5,50 @@ import {
   StyleSheet,
   Button,
   TextInput,
-  Alert,
   Picker,
   PickerIOS,
+  ActivityIndicator,
 } from "react-native";
-import { useForm } from "react-hook-form";
+
 import Constants from "expo-constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import ModalActivityIndicator from "./patial-screen/ModelActivityIndicator";
 
-function SignUpForm(props) {
+function SignUpForm({ navigation }) {
   const [selectedValue, setSelectedValue] = useState("Watcher");
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    console.log(selectedValue + " Test");
-  };
+  function handleSubmit() {
+    fetch("http://192.168.2.161:5000/user/signup", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        fullname: fullname,
+        email: email,
+        username: username,
+        password: password,
+        accountType: selectedValue,
+      }),
+    })
+      .then(() => {
+        navigation.navigate("Home");
+        setFullName("");
+        setEmail("");
+        setPassword("");
+        setUsername("");
+      })
+      .catch(function (error) {
+        console.log(error.message);
+        throw error;
+      });
+  }
 
   return (
     <View style={styles.container}>
@@ -50,6 +76,7 @@ function SignUpForm(props) {
       />
       <TextInput
         placeholder="Password"
+        secureTextEntry={true}
         style={styles.input}
         value={password}
         onChangeText={(text) => setPassword(text)}
@@ -71,17 +98,17 @@ function SignUpForm(props) {
           <Picker.Item label="Creator" value="Creator" />
         </Picker>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleSubmit}>
         <View style={styles.button}>
-          <Text
-            title="Sign Up"
-            style={styles.buttonText}
-            onPress={handleSubmit}
-          >
+          <Text title="Sign Up" style={styles.buttonText}>
             S I G N U P
           </Text>
         </View>
       </TouchableOpacity>
+
+      {/* <View>
+        <ModalActivityIndicator show={isLoading} />
+      </View> */}
     </View>
   );
 }

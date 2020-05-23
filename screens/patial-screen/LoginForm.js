@@ -38,6 +38,7 @@ const LoginDialog = (props) => {
       <TextInput
         placeholder="Password"
         value={password}
+        secureTextEntry={true}
         style={styles.input}
         onChangeText={(text) => setPassword(text)}
       />

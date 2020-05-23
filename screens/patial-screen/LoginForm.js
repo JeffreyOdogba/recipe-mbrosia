@@ -5,10 +5,8 @@ import {
   StyleSheet,
   Button,
   TextInput,
-  Alert,
   TouchableOpacity,
 } from "react-native";
-//import { useForm } from "react-hook-form";
 import Constants from "expo-constants";
 
 const LoginDialog = (props) => {
@@ -18,7 +16,8 @@ const LoginDialog = (props) => {
   const [password, setPassword] = useState("LOL");
 
   const handleSubmit = () => {
-    console.log(username + " Test");
+    props.closemodel();
+    props.navigation.navigate("Home");
   };
 
   return (

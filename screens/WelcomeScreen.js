@@ -32,7 +32,7 @@ function WelcomeScreen({ navigation }) {
       <View style={styles.loginBtn}>
         <Button title="Login" onPress={toggleModal} />
         <Modal isVisible={visible} onBackdropPress={() => setVisible(false)}>
-          <LoginDialog closemodel={toggleModal} />
+          <LoginDialog closemodel={toggleModal} navigation={navigation} />
         </Modal>
       </View>
 

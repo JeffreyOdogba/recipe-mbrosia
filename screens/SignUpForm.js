@@ -7,7 +7,6 @@ import {
   TextInput,
   Picker,
   PickerIOS,
-  ActivityIndicator,
 } from "react-native";
 
 import Constants from "expo-constants";

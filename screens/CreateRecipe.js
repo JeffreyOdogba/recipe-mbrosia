@@ -5,18 +5,18 @@ import {
   StyleSheet,
   Button,
   TextInput,
-  Alert,
   TouchableOpacity,
 } from "react-native";
 import Constants from "expo-constants";
 import FooterMenu from "./patial-screen/FooterMenu";
 
-const Home = ({ navigation }) => {
+const CreateRecipe = (props) => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <Text>Create Recipe</Text>
+
       <View style={styles.footer}>
-        <FooterMenu navigation={navigation} />
+        <FooterMenu />
       </View>
     </View>
   );
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default CreateRecipe;

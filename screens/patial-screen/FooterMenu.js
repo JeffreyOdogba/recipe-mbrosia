@@ -13,11 +13,14 @@ function FooterMenu(props) {
   function handleCreateRecipe() {
     props.navigation.navigate("CreateRecipe");
   }
+  function handleHome() {
+    props.navigation.navigate("Home");
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.icon}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleHome}>
           <AntDesign name="home" size={32} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity>

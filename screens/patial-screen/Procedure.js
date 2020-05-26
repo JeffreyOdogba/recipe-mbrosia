@@ -10,10 +10,12 @@ import {
 
 const Procedure = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Procedure Screen</Text>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {},
+});
 export default Procedure;

@@ -10,10 +10,12 @@ import {
 
 const Ingredients = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Ingredients Screen</Text>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {},
+});
 export default Ingredients;

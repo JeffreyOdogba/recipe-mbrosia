@@ -42,11 +42,10 @@ function FooterMenu(props) {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    bottom: 0,
-    height: 40,
-    width: "100%",
+    height: 45,
     justifyContent: "flex-end",
+    borderTopWidth: 1,
+    borderColor: "#cfcfcf",
   },
   icon: {
     flexDirection: "row",

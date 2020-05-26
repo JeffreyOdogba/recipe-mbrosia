@@ -7,6 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import Summary from "./Summary";
 import Ingredients from "./Ingredients";
 import Procedure from "./Procedure";
@@ -18,46 +22,52 @@ const Tabbar = (props) => {
     setIndex(text);
   };
   return (
-    <View style={styles.menuContainer}>
+    <View style={{ flex: 1 }}>
       <View style={styles.tabcontent}>
-        <View
-          style={[
-            styles.tab,
-            index === "1" ? styles.selectedIndex : styles.unselectedIndex,
-          ]}
-        >
-          <TouchableOpacity onPress={() => onChangeIndex("1")}>
+        <TouchableOpacity onPress={() => onChangeIndex("1")}>
+          <View
+            style={[
+              styles.tab,
+              index === "1" ? styles.selectedIndex : styles.unselectedIndex,
+            ]}
+          >
             <Text style={styles.tabText}>Summary</Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
 
-        <View
-          style={[
-            styles.tab,
-            index === "2" ? styles.selectedIndex : styles.unselectedIndex,
-          ]}
-        >
-          <TouchableOpacity onPress={() => onChangeIndex("2")}>
+        <TouchableOpacity onPress={() => onChangeIndex("2")}>
+          <View
+            style={[
+              styles.tab,
+              index === "2" ? styles.selectedIndex : styles.unselectedIndex,
+            ]}
+          >
             <Text style={styles.tabText}>Ingredients </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
 
-        <View
-          style={[
-            styles.tab,
-            index === "3" ? styles.selectedIndex : styles.unselectedIndex,
-          ]}
-        >
-          <TouchableOpacity onPress={() => onChangeIndex("3")}>
+        <TouchableOpacity onPress={() => onChangeIndex("3")}>
+          <View
+            style={[
+              styles.tab,
+              index === "3" ? styles.selectedIndex : styles.unselectedIndex,
+            ]}
+          >
             <Text style={styles.tabText}>Procedure</Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.content}>
+      {/* <View style={{ flex: 100, backgroundColor: "red" }}></View> */}
+
+      <View style={styles.contentContainer}>
         {index === "1" && <Summary navigation={props.navigation} />}
+
         {index === "2" && <Ingredients navigation={props.navigation} />}
-        {index === "3" && <Procedure navigation={props.navigation} />}
+
+        <View>
+          {index === "3" && <Procedure navigation={props.navigation} />}
+        </View>
       </View>
     </View>
   );
@@ -66,15 +76,13 @@ const Tabbar = (props) => {
 const styles = StyleSheet.create({
   tab: {
     backgroundColor: "#dedede",
-    width: 130,
-    height: 30,
+    width: wp("31.70%"),
+    height: 40,
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center",
   },
-  menuContainer: {
-    flexDirection: "column",
-  },
+  menuContainer: {},
   selectedIndex: {
     backgroundColor: "red",
     borderRadius: 5,
@@ -88,10 +96,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tabcontent: {
+    flex: 9,
+    justifyContent: "center",
     flexDirection: "row",
   },
-  content: {
-    paddingTop: 20,
+  contentContainer: {
+    flex: 100,
   },
 });
 

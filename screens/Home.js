@@ -14,7 +14,10 @@ import FooterMenu from "./patial-screen/FooterMenu";
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <View style={styles.contentContainer}>
+        <Text>Home</Text>
+      </View>
+
       <View style={styles.footer}>
         <FooterMenu navigation={navigation} />
       </View>
@@ -25,11 +28,12 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
-    padding: 5,
-    backgroundColor: "#f5f4ed",
+    flexDirection: "column",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
   },
-  footer: {
+  contentContainer: {
     flex: 1,
   },
 });

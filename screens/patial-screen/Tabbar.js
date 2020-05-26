@@ -65,9 +65,7 @@ const Tabbar = (props) => {
 
         {index === "2" && <Ingredients navigation={props.navigation} />}
 
-        <View>
-          {index === "3" && <Procedure navigation={props.navigation} />}
-        </View>
+        {index === "3" && <Procedure navigation={props.navigation} />}
       </View>
     </View>
   );

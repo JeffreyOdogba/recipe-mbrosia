@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  KeyboardAvoidingView,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -37,7 +38,10 @@ const Summary = () => {
     setCookingCount(cookingCount + 1);
   };
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
       {/* Forms Tab */}
       <View style={styles.formStyle}>
         <View style={styles.recipe}>
@@ -125,7 +129,7 @@ const Summary = () => {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

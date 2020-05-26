@@ -10,6 +10,7 @@ import {
   Platform,
   Dimensions,
   ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
@@ -30,27 +31,31 @@ const CreateRecipe = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <StatusBar barStyle={statusColor()} />
+      <View style={styles.body}>
+        <View style={styles.profileImage}>
+          <MaterialCommunityIcons name="face-profile" size={40} color="black" />
+        </View>
+        <View style={styles.header}>
+          <Text style={styles.textHeader}>Create Recipe</Text>
+        </View>
 
-      <View style={styles.profileImage}>
-        <MaterialCommunityIcons name="face-profile" size={40} color="black" />
-      </View>
-      <View style={styles.header}>
-        <Text style={styles.textHeader}>Create Recipe</Text>
-      </View>
+        <View style={styles.tab}>
+          <Tabbar navigation={navigation} />
+        </View>
 
-      <View style={styles.tab}>
-        <Tabbar navigation={navigation} />
-      </View>
-
-      {/* <View style={styles.t}></View>
+        {/* <View style={styles.t}></View>
       <View style={styles.c}></View> */}
+      </View>
 
       <View style={styles.footer}>
         <FooterMenu navigation={navigation} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -60,6 +65,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: Constants.statusBarHeight,
+  },
+  body: {
+    flex: 1,
   },
   header: {},
   profileImage: {
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
   },
+  footer: {},
 });
 
 export default CreateRecipe;

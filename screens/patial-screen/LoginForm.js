@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Constants from "expo-constants";
+import { AuthContext } from "../../components/context";
 
 const LoginDialog = (props) => {
   //const { register, setValue, handleSubmit, errors } = useForm();
@@ -15,9 +16,10 @@ const LoginDialog = (props) => {
   const [username, setUsername] = useState("Jeff");
   const [password, setPassword] = useState("LOL");
 
-  const handleSubmit = () => {
-    props.closemodel();
-    props.navigation.navigate("Home");
+  const { signIn } = useContext(AuthContext);
+
+  const loginHandler = (username, password) => {
+    signIn(username, password);
   };
 
   return (
@@ -41,7 +43,11 @@ const LoginDialog = (props) => {
         style={styles.input}
         onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity onPress={handleSubmit}>
+      <TouchableOpacity
+        onPress={() => {
+          signIn(username, password);
+        }}
+      >
         <View style={styles.button}>
           <Text style={styles.buttonText}>L O G I N</Text>
         </View>

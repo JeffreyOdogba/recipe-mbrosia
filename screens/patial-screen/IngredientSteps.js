@@ -6,19 +6,25 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
-  ScrollView,
+  Dimensions,
 } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+var width = Dimensions.get("window").width;
+var height = Dimensions.get("window").height;
 
 const IngredientStep = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.stepContent}>
-        <Text style={styles.stepTitle}>Step {props.step}:</Text>
         <TextInput
           style={styles.stylesText}
           multiline={true}
-          numberOfLines={2}
-          placeholder="Enter Spice 1"
+          numberOfLines={1}
+          placeholder={`Enter Spice ${props.step}`}
         ></TextInput>
       </View>
     </View>
@@ -26,17 +32,14 @@ const IngredientStep = (props) => {
 };
 const styles = StyleSheet.create({
   container: {},
-  stepContent: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  },
+  stepContent: {},
   stepTitle: {
-    fontSize: 25,
+    fontSize: 23,
   },
   stylesText: {
     borderBottomWidth: 2,
     borderColor: "red",
-    width: 300,
+    fontSize: 21,
   },
 });
 export default IngredientStep;

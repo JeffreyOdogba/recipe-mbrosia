@@ -17,9 +17,7 @@ import {
 } from "react-native-responsive-screen";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-let ScreenHeight = Dimensions.get("window").height;
-
-const Summary = () => {
+const Summary = (props) => {
   const [recipeTitle, setRecipeTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [servingCount, setServingCount] = useState(1);
@@ -37,26 +35,27 @@ const Summary = () => {
   const addCookingCounter = () => {
     setCookingCount(cookingCount + 1);
   };
+
+  const onHandleContinue = () => {};
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      {/* Forms Tab */}
-      <View style={styles.formStyle}>
-        <View style={styles.recipe}>
-          <TextInput
-            autoCapitalize="words"
-            numberOfLines={2}
-            placeholder="Recipe Name 🧐"
-            style={styles.recipeText}
-            value={recipeTitle}
-            onChangeText={(text) => setRecipeTitle(text)}
-          />
-        </View>
-
-        <View style={styles.summary}>
-          <ScrollView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.recipe}>
+            <TextInput
+              autoCapitalize="words"
+              numberOfLines={2}
+              placeholder="Recipe Name 🧐"
+              style={styles.recipeText}
+              value={recipeTitle}
+              onChangeText={(text) => setRecipeTitle(text)}
+            />
+          </View>
+          <View style={styles.summary}>
             <TextInput
               multiline={true}
               numberOfLines={2}
@@ -65,110 +64,108 @@ const Summary = () => {
               value={summary}
               onChangeText={(text) => setSummary(text)}
             />
-          </ScrollView>
-        </View>
-      </View>
-
-      {/* Servering Tab */}
-      <View style={styles.sc}>
-        <View style={styles.servings}>
-          <Text style={styles.servingstext}>Servings/People: </Text>
-          <View style={styles.servingsalign}>
-            <View style={styles.iValue}>
-              <Text style={styles.value}>{servingCount}</Text>
-            </View>
-
-            <TouchableOpacity onPress={subServingCounter}>
-              <View style={styles.subh}>
-                <Text style={styles.sub}>-</Text>
-              </View>
-            </TouchableOpacity>
-
-            <Text style={styles.sub}>|</Text>
-            <TouchableOpacity onPress={addServingCounter}>
-              <View style={styles.subh}>
-                <Text style={styles.sub}>+</Text>
-              </View>
-            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Cooking Tab */}
-        <View style={styles.cooking}>
-          <Text style={styles.servingstext}>Cooking time/Min: </Text>
-          <View style={styles.servingsalign}>
-            <View style={styles.iValue}>
-              <Text style={styles.value}>{cookingCount}</Text>
+        <View style={styles.sc}>
+          <View style={styles.servings}>
+            <Text style={styles.servingstext}>Servings/People: </Text>
+            <View style={styles.servingsalign}>
+              <View style={styles.iValue}>
+                <Text style={styles.value}>{servingCount}</Text>
+              </View>
+
+              <TouchableOpacity onPress={subServingCounter}>
+                <View style={styles.subh}>
+                  <Text style={styles.sub}>-</Text>
+                </View>
+              </TouchableOpacity>
+
+              <Text style={styles.sub}>|</Text>
+              <TouchableOpacity onPress={addServingCounter}>
+                <View style={styles.subh}>
+                  <Text style={styles.sub}>+</Text>
+                </View>
+              </TouchableOpacity>
             </View>
+          </View>
 
-            <TouchableOpacity onPress={subCookingCounter}>
-              <View style={styles.subh}>
-                <Text style={styles.sub}>-</Text>
+          <View style={styles.cooking}>
+            <Text style={styles.servingstext}>Cooking time/Min: </Text>
+            <View style={styles.servingsalign}>
+              <View style={styles.iValue}>
+                <Text style={styles.value}>{cookingCount}</Text>
               </View>
-            </TouchableOpacity>
 
-            <Text style={styles.sub}>|</Text>
-            <TouchableOpacity onPress={addCookingCounter}>
-              <View style={styles.subh}>
-                <Text style={styles.sub}>+</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={subCookingCounter}>
+                <View style={styles.subh}>
+                  <Text style={styles.sub}>-</Text>
+                </View>
+              </TouchableOpacity>
+
+              <Text style={styles.sub}>|</Text>
+              <TouchableOpacity onPress={addCookingCounter}>
+                <View style={styles.subh}>
+                  <Text style={styles.sub}>+</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-      {/* Upload Image Tab */}
-      <View style={styles.uploadContainer}>
-        <View style={styles.plusIconContainer}>
-          <Ionicons name="ios-add-circle" size={40} color="red" />
-          <Text style={styles.uploadText}>Upload Image</Text>
-        </View>
 
-        <TouchableOpacity>
+        <View style={styles.uploadContainer}>
+          <View style={styles.plusIconContainer}>
+            <Ionicons name="ios-add-circle" size={50} color="red" />
+            <Text style={styles.uploadText}>Upload Image</Text>
+          </View>
+        </View>
+        <TouchableOpacity onPress={onHandleContinue}>
           <View style={styles.contiuneBtn}>
-            <Text style={styles.contiuneText}>Continue</Text>
+            <Text style={styles.contiuneText}>Save</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  formStyle: {
-    flex: 0.3,
-  },
   recipe: {
+    marginVertical: 10,
+    justifyContent: "flex-end",
     ...Platform.select({
-      android: {},
+      android: {
+        flex: 5,
+      },
       ios: {
-        top: 12,
+        flex: 5,
       },
     }),
   },
   recipeText: {
     borderBottomWidth: 2,
-    fontSize: 24,
+    fontSize: 29,
     borderColor: "red",
   },
-
   summaryText: {
     borderBottomWidth: 2,
     borderColor: "red",
-    fontSize: 24,
+    fontSize: 29,
   },
   summary: {
-    flex: 0.55,
+    justifyContent: "flex-end",
     ...Platform.select({
       ios: {
-        top: 40,
+        flex: 5,
       },
       android: {
-        top: 30,
+        flex: 5,
       },
     }),
   },
   sc: {
-    flex: 0.2,
+    flex: 0.34,
+    marginVertical: 19,
     ...Platform.select({
       ios: {},
       android: {},
@@ -214,11 +211,12 @@ const styles = StyleSheet.create({
     fontSize: 29,
     fontWeight: "bold",
   },
+
   uploadContainer: {
-    flex: 0.29,
+    flex: 0.9,
+    marginVertical: 10,
     backgroundColor: "#edd0ce",
     borderRadius: 13,
-    justifyContent: "space-between",
   },
   plusIconContainer: {
     margin: 19,
@@ -230,15 +228,10 @@ const styles = StyleSheet.create({
   contiuneBtn: {
     backgroundColor: "red",
     justifyContent: "center",
+    marginVertical: 10,
     alignItems: "center",
     height: hp("7.4"),
     borderRadius: 13,
-    top: 90,
-
-    // ...Platform.select({
-    //   ios: {},
-    //   android: {},
-    // }),
   },
   contiuneText: {
     fontSize: 20,

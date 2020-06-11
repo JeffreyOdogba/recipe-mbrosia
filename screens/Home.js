@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,27 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import Constants from "expo-constants";
 import FooterMenu from "./patial-screen/FooterMenu";
+import { AntDesign } from "@expo/vector-icons";
+import { AuthContext } from "../components/context";
 
 const Home = ({ navigation }) => {
+  const { signOut } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
+      <View style={styles.logoutBtn}>
+        <TouchableOpacity
+          onPress={() => {
+            signOut();
+          }}
+        >
+          <AntDesign name="login" size={30} color="red" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.contentContainer}>
         <Text>Home</Text>
       </View>
@@ -28,13 +42,14 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 10,
+    paddingTop: Constants.statusBarHeight,
   },
   contentContainer: {
     flex: 1,
+  },
+  logoutBtn: {
+    alignItems: "flex-end",
+    marginRight: 5,
   },
 });
 

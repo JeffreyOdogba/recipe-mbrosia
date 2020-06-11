@@ -1,7 +1,11 @@
 const router = require("express").Router();
+const auth = require("../middleware/auth");
 let Recipe = require("../models/recipe.model");
 
-router.route("/addrecipe").post((req, res) => {
+// @route POSR api/addrecipe
+// @desc Create a recipe
+// @access Private
+router.route("/addrecipe", auth).post((req, res) => {
   const dateCreated = Date.now().toLocaleString();
 
   const {

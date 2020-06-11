@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import Constants from "expo-constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ModalActivityIndicator from "./patial-screen/ModelActivityIndicator";
 
+import { AuthContext } from "../components/context";
+
 function SignUpForm({ navigation }) {
   const [selectedValue, setSelectedValue] = useState("Watcher");
   const [fullname, setFullName] = useState("");
@@ -21,8 +23,17 @@ function SignUpForm({ navigation }) {
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
 
+  const { register } = useContext(AuthContext);
+
+  const registerHandler = () => {
+    setFullName("");
+    setEmail("");
+    setPassword("");
+    setUsername("");
+  };
+
   function handleSubmit() {
-    fetch("http://192.168.2.161:5000/user/signup", {
+    fetch("http://192.168.2.225:5000/api/user/signup", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -65,6 +76,7 @@ function SignUpForm({ navigation }) {
         placeholder="Email"
         style={styles.input}
         value={email}
+        keyboardType={"email-address"}
         onChangeText={(text) => setEmail(text)}
       />
       <TextInput
@@ -97,7 +109,18 @@ function SignUpForm({ navigation }) {
           <Picker.Item label="Creator" value="Creator" />
         </Picker>
       </View>
-      <TouchableOpacity onPress={handleSubmit}>
+      <TouchableOpacity
+        onPress={async () => {
+          try {
+            setLoading(true);
+            await register(fullname, username, password, email, selectedValue);
+            navigation.pop();
+            setLoading(false);
+          } catch (error) {
+            setLoading(false);
+          }
+        }}
+      >
         <View style={styles.button}>
           <Text title="Sign Up" style={styles.buttonText}>
             S I G N U P
@@ -105,9 +128,7 @@ function SignUpForm({ navigation }) {
         </View>
       </TouchableOpacity>
 
-      {/* <View>
-        <ModalActivityIndicator show={isLoading} />
-      </View> */}
+      <ModalActivityIndicator show={isLoading} />
     </View>
   );
 }

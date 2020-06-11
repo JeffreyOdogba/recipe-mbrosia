@@ -20,11 +20,8 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
-//Create Route
-const userRouter = require("./routes/users");
-
 // Use Router
-app.use("/user", userRouter);
+app.use("/api/user", require("./routes/users"));
 
 app.listen(port, () => {
   console.log(`listening on hahah port ${port}`);

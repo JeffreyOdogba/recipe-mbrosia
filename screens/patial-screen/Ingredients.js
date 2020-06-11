@@ -7,29 +7,58 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
 import IngredientStep from "./IngredientSteps";
 
 const Ingredients = () => {
-  const [stepCounter, setStepCounter] = useState(1);
+  const [stepCounter, setStepCounter] = useState([{ id: 1, value: 1 }]);
 
-  const addStepCounterHandler = () => {};
+  const IngredientInfo = {
+    id: "",
+    spice: "",
+  };
+
+  const addSpiceViewHandler = () => {
+    setStepCounter((stepCounter) => [
+      ...stepCounter,
+      {
+        id: stepCounter[stepCounter.length - 1].id + 1,
+        value: stepCounter[stepCounter.length - 1].value + 1,
+      },
+    ]);
+    console.log(stepCounter);
+  };
+
+  const onHandeleContinue = () => {};
 
   return (
-    <View style={styles.container}>
-      <View style={styles.addBtn}>
-        <TouchableOpacity onPress={addStepCounterHandler}>
-          <Ionicons name="ios-add-circle" size={35} color="red" />
-        </TouchableOpacity>
-      </View>
-
+    <KeyboardAvoidingView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.contentStep}>
-          <IngredientStep step={stepCounter} />
+          {stepCounter.map((item) => (
+            <View style={{ marginVertical: 15 }} key={item.id}>
+              <IngredientStep step={item.value} />
+            </View>
+          ))}
         </View>
+        <TouchableOpacity onPress={onHandeleContinue}>
+          <View style={styles.contiuneBtn}>
+            <Text style={styles.contiuneText}>Save</Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
-    </View>
+      <View style={styles.addBtn}>
+        <TouchableOpacity onPress={addSpiceViewHandler}>
+          <Ionicons name="ios-add-circle" size={60} color="red" />
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 const styles = StyleSheet.create({
@@ -38,12 +67,29 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     alignItems: "flex-end",
+    shadowOpacity: 1.0,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: "black",
+    shadowRadius: 3,
   },
   scrollContainer: {
     flex: 1,
   },
   contentStep: {
-    backgroundColor: "green",
+    paddingTop: 15,
+  },
+  contiuneBtn: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    marginVertical: 10,
+    alignItems: "center",
+    height: hp("7.4"),
+    borderRadius: 13,
+  },
+  contiuneText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 export default Ingredients;

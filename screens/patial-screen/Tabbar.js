@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center",
+    elevation: 3,
   },
   menuContainer: {},
   selectedIndex: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   contentContainer: {
-    flex: 100,
+    flex: 90,
   },
 });
 

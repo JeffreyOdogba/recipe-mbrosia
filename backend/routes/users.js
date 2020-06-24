@@ -7,6 +7,8 @@ let User = require("../models/user.model");
 router.route("/signup").post((req, res) => {
   const dateCreated = Date.now().toLocaleString();
 
+  console.log("Someone Came in here");
+
   const {
     fullname,
     email,
@@ -16,11 +18,11 @@ router.route("/signup").post((req, res) => {
     accountType,
   } = req.body;
 
+  console.log(username, email);
+
   User.findOne({ username: username }).then((user) => {
     if (user) {
-      return res
-        .status(400)
-        .json({ success: false, username: "Username already exists" });
+      return res.status(400).json({ msg: "Username already exists" });
     } else {
       const newUser = new User({
         fullname,
@@ -42,6 +44,7 @@ router.route("/signup").post((req, res) => {
                 id: user.id,
                 name: user.username,
               };
+
               // Sign token
               jwt.sign(
                 payload,
@@ -64,7 +67,7 @@ router.route("/signup").post((req, res) => {
                 }
               );
             })
-            .catch((err) => res.status(400).json("Error: " + err));
+            .catch((err) => console.log(err));
         });
       });
     }
@@ -75,7 +78,7 @@ router.route("/login").post((req, res) => {
   const { username, password } = req.body;
   User.findOne({ username }).then((user) => {
     if (!user) {
-      return res.status(404).json({ usernameNotFound: "Username not found" });
+      return res.status(404).json({ msg: "Username not found" });
     }
 
     // Check password
@@ -107,9 +110,7 @@ router.route("/login").post((req, res) => {
           }
         );
       } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+        return res.status(400).json({ msg: "Password incorrect" });
       }
     });
   });

@@ -19,6 +19,7 @@ router.route("/addrecipe", auth).post((req, res) => {
     kcal,
     comment,
     photo,
+    likes,
   } = req.body;
 
   const newRecipe = new Recipe({
@@ -32,6 +33,7 @@ router.route("/addrecipe", auth).post((req, res) => {
     kcal,
     comment,
     photo,
+    likes,
   });
 
   newRecipe

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -8,57 +9,20 @@ import {
   Picker,
   PickerIOS,
 } from "react-native";
-
 import Constants from "expo-constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ModalActivityIndicator from "./patial-screen/ModelActivityIndicator";
 
-import { AuthContext } from "../components/context";
+import { AuthContext } from "../context/auth/authContext";
 
-function SignUpForm({ navigation }) {
-  const [selectedValue, setSelectedValue] = useState("Watcher");
+function SignUpForm() {
+  const [accountType, setAccountType] = useState("Watcher");
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setLoading] = useState(false);
 
-  const { register } = useContext(AuthContext);
-
-  const registerHandler = () => {
-    setFullName("");
-    setEmail("");
-    setPassword("");
-    setUsername("");
-  };
-
-  function handleSubmit() {
-    fetch("http://192.168.2.225:5000/api/user/signup", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        fullname: fullname,
-        email: email,
-        username: username,
-        password: password,
-        accountType: selectedValue,
-      }),
-    })
-      .then(() => {
-        navigation.navigate("Home");
-        setFullName("");
-        setEmail("");
-        setPassword("");
-        setUsername("");
-      })
-      .catch(function (error) {
-        console.log(error.message);
-        throw error;
-      });
-  }
+  const { signUp, signIn } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -66,6 +30,9 @@ function SignUpForm({ navigation }) {
         <Text style={styles.headerText}>Mbrosia, The Sauce to the heart</Text>
       </View>
 
+      <View>
+        <Text style={{ fontSize: 20, color: "red" }}>{error}</Text>
+      </View>
       <TextInput
         placeholder="Full Name"
         style={styles.input}
@@ -101,25 +68,24 @@ function SignUpForm({ navigation }) {
             justifyContent: "center",
             alignItems: "center",
           }}
-          selectedValue={selectedValue}
+          accountType={accountType}
           style={styles.options}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+          onValueChange={(itemValue, itemIndex) => setAccountType(itemValue)}
         >
           <Picker.Item label="Watcher" value="Watcher" />
           <Picker.Item label="Creator" value="Creator" />
         </Picker>
       </View>
       <TouchableOpacity
-        onPress={async () => {
-          try {
-            setLoading(true);
-            await register(fullname, username, password, email, selectedValue);
-            navigation.pop();
-            setLoading(false);
-          } catch (error) {
-            setLoading(false);
-          }
-        }}
+        onPress={() =>
+          signUp({
+            fullname,
+            username,
+            password,
+            email,
+            accountType,
+          })
+        }
       >
         <View style={styles.button}>
           <Text title="Sign Up" style={styles.buttonText}>
@@ -127,8 +93,6 @@ function SignUpForm({ navigation }) {
           </Text>
         </View>
       </TouchableOpacity>
-
-      <ModalActivityIndicator show={isLoading} />
     </View>
   );
 }

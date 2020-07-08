@@ -8,19 +8,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Constants from "expo-constants";
-import { AuthContext } from "../../components/context";
+import { AuthContext } from "../../context/auth/authContext";
 
 const LoginDialog = (props) => {
-  //const { register, setValue, handleSubmit, errors } = useForm();
-
   const [username, setUsername] = useState("Jeff");
   const [password, setPassword] = useState("LOL");
 
-  const { signIn } = useContext(AuthContext);
-
-  const loginHandler = (username, password) => {
-    signIn(username, password);
-  };
+  const signIn = useContext(AuthContext);
 
   return (
     <View style={styles.container}>

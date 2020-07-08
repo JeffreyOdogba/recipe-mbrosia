@@ -18,10 +18,9 @@ router.route("/signup").post((req, res) => {
     accountType,
   } = req.body;
 
-  console.log(username, email);
-
   User.findOne({ username: username }).then((user) => {
     if (user) {
+      console.log("Username already exists");
       return res.status(400).json({ msg: "Username already exists" });
     } else {
       const newUser = new User({
@@ -56,18 +55,17 @@ router.route("/signup").post((req, res) => {
                   if (err) throw err;
 
                   res.json({
-                    success: true,
                     token: "Bearer " + token,
-                    user: {
-                      id: user.id,
-                      username: user.username,
-                      email: user.email,
-                    },
+                    // user: {
+                    //   id: user.id,
+                    //   username: user.username,
+                    //   email: user.email,
+                    // },
                   });
                 }
               );
             })
-            .catch((err) => console.log(err));
+            .catch((err) => res.status(500).send("Server Error"));
         });
       });
     }

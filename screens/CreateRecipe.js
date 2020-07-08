@@ -47,9 +47,9 @@ const CreateRecipe = ({ navigation }) => {
           </View>
         </TouchableWithoutFeedback>
 
-        <View style={styles.footer}>
+        {/* <View style={styles.footer}>
           <FooterMenu navigation={navigation} />
-        </View>
+        </View> */}
       </View>
     </KeyboardAvoidingView>
   );

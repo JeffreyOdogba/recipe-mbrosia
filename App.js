@@ -1,183 +1,161 @@
 import "react-native-gesture-handler";
-import React, { useState, useEffect, useMemo, useReducer } from "react";
+import React, { useState, useContext, useReducer, useEffect } from "react";
 
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import WelcomeScreen from "./screens/WelcomeScreen";
 import SignUpForm from "./screens/SignUpForm";
 import LoginDialog from "./screens/patial-screen/LoginForm";
 import Home from "./screens/Home";
 import CreateRecipe from "./screens/CreateRecipe";
+import RecipeState from "./context/recipes/RecipeState";
+
 import Ingredients from "./screens/patial-screen/Ingredients";
-import { View, ActivityIndicator, Alert } from "react-native";
-import { AuthContext } from "./components/context";
+import AuthState from "./context/auth/authState";
 import AsyncStorage from "@react-native-community/async-storage";
-import sleep from "./helper/sleep";
+import setAuthToken from "./helper/setAuthToken";
+import { reducer, initialState } from "./context/auth/authReducer";
+
+import {
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  USER_LOADED,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT,
+  CLEAR_ERRORS,
+  AUTH_ERROR,
+} from "./context/types";
+
+import { Ionicons } from "@expo/vector-icons";
+
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-export default function App() {
-  // const [isLoading, setLoading] = useState(true);
-  // const [userToken, setUsertoken] = useState(null);
+export default function App({ navigation }) {
+  // const [state, dispatch] = useReducer(reducer, initialState);
 
-  const initialLoginState = {
-    isLoading: true,
-    username: null,
-    userToken: null,
-  };
+  // useEffect(() => {
+  //   // Fetch the token from storage then navigate to our appropriate place
+  //   const bootstrapAsync = async () => {
+  //     let token;
 
-  const loginReducer = (preState, action) => {
-    switch (action.type) {
-      case "RETRIEVE_TOKEN":
-        return {
-          ...preState,
-          userToken: action.token,
-          isLoading: false,
-        };
-      case "LOGIN":
-        return {
-          ...preState,
-          username: action.id,
-          userToken: action.token,
-          isLoading: false,
-        };
-      case "LOGOUT":
-        return {
-          ...preState,
-          username: null,
-          userToken: null,
-          isLoading: false,
-        };
-      case "REGISTER":
-        return {
-          ...preState,
-          username: action.id,
-          userToken: action.token,
-          isLoading: false,
-        };
+  //     try {
+  //       token = await AsyncStorage.getItem("token");
+  //     } catch (e) {
+  //       // Restoring token failed
+  //       console.log(e.message);
+  //       dispatch({ type: "REGISTER_FAIL", token: token });
+  //     }
 
-      default:
-        break;
-    }
-  };
+  //     // After restoring token, we may need to validate it in production apps
 
-  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
+  //     // This will switch to the App screen or Auth screen and this loading
+  //     // screen will be unmounted and thrown away.
+  //     dispatch({ type: "USER_LOADED", token: token });
+  //   };
 
-  const authContext = useMemo(
-    () => ({
-      signIn: async (username, password) => {
-        // setUsertoken("qazwsx");
-        // setLoading(false);
-        let userToken;
-        userToken = null;
-        if (username === "" || password === "") {
-          Alert.alert(
-            "Username or Password cannot be empty",
-            "Please Try again"
-          );
-        } else {
-          if (username === "Jeff" && password === "pass") {
-            userToken = "qazwsx";
-            try {
-              await AsyncStorage.setItem("userToken", userToken);
-            } catch (e) {
-              console.log(e);
-            }
-          } else {
-            Alert.alert("Wrong password", "Try again");
-          }
-        }
+  //   bootstrapAsync();
+  // }, []);
 
-        dispatch({ type: "LOGIN", id: username, token: userToken });
-      },
-      signOut: async () => {
-        // setUsertoken(null);
-        // setLoading(false);
-        try {
-          await AsyncStorage.removeItem("userToken");
-        } catch (e) {
-          console.log(e);
-        }
-        dispatch({ type: "LOGOUT" });
-      },
-      register: async (fullname, username, password, email, selectedValue) => {
-        // setUsertoken("qazwsx");
-        // setLoading(false);
+  // // Register User
+  // const authContext = React.useMemo(
+  //   () => ({
+  //     signUp: async (formData) => {
+  //       const config = {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       };
+  //       try {
+  //         const res = await axios.post(
+  //           "http://192.168.2.225:5000/api/user/signup",
+  //           formData,
+  //           config
+  //         );
+  //         console.log(JSON.stringify(res + " In SignUp 1"));
 
-        let userToken;
-        userToken = null;
+  //         await AsyncStorage.setItem("token", res.data.token);
+  //         dispatch({
+  //           type: REGISTER_SUCCESS,
+  //           payload: JSON.stringify(res.data),
+  //         });
 
-        await fetch("http://192.168.2.225:5000/api/user/signup", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            fullname: fullname,
-            email: email,
-            username: username,
-            password: password,
-            accountType: selectedValue,
-          }),
-        })
-          .then(() => {
-            userToken = "qazwsx";
-            try {
-              AsyncStorage.setItem("userToken", userToken);
-            } catch (e) {
-              console.log(e);
-            }
-          })
-          .catch(function (error) {
-            console.log(error.message);
-            throw error;
-          });
-      },
-    }),
-    []
-  );
+  //         // Navigate to Home Screen
+  //       } catch (err) {
+  //         console.log(JSON.stringify(err.res.data.msg) + " Sign 2");
 
-  useEffect(() => {
-    setTimeout(async () => {
-      let userToken;
-      userToken = null;
-      try {
-        userToken = await AsyncStorage.getItem("userToken", userToken);
-      } catch (e) {
-        console.log(e);
-      }
-      dispatch({ type: "REGISTER", token: userToken });
-    }, 1000);
-  }, []);
+  //         await AsyncStorage.removeItem("token");
+  //         dispatch({
+  //           type: REGISTER_FAIL,
+  //           payload: "Something wemt wrong!",
+  //         });
+  //       }
+  //     },
+  //     signIn: async (data) => {
+  //       console.log("Sign In entered");
+  //       const config = {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       };
+  //       try {
+  //         const res = await axios.post(
+  //           "http://192.168.2.225:5000/api/user/login",
+  //           data,
+  //           config
+  //         );
+  //         console.log(JSON.stringify(res + " In SignUp 1"));
 
-  if (loginState.isLoading) {
-    return (
-      <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
-      >
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  //         await AsyncStorage.setItem("token", res.data.token);
+  //         dispatch({
+  //           type: LOGIN_SUCCESS,
+  //           payload: JSON.stringify(res.data),
+  //         });
+
+  //         // Navigate to Home Screen
+  //       } catch (err) {
+  //         console.log(JSON.stringify(err.res.data.msg) + " Sign 2");
+
+  //         await AsyncStorage.removeItem("token");
+  //         dispatch({
+  //           type: REGISTER_FAIL,
+  //           payload: "Something wemt wrong!",
+  //         });
+  //       }
+  //     },
+  //   }),
+  //   []
+  // );
 
   return (
-    <AuthContext.Provider value={authContext}>
+    <RecipeState>
       <NavigationContainer>
-        {loginState.userToken !== null ? (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="CreateRecipe" component={CreateRecipe} />
-            <Stack.Screen name="Ingredients" component={Ingredients} />
-          </Stack.Navigator>
-        ) : (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-            <Stack.Screen name="LoginDialog" component={LoginDialog} />
-            <Stack.Screen name="SignUpForm" component={SignUpForm} />
-          </Stack.Navigator>
-        )}
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === "Home") {
+                iconName = focused ? "ios-home" : "ios-home";
+              } else if (route.name === "CreateRecipe") {
+                iconName = focused ? "ios-restaurant" : "ios-restaurant";
+              }
+
+              return <Ionicons name={iconName} size={32} color={color} />;
+            },
+          })}
+          tabBarOptions={{
+            activeTintColor: "tomato",
+            inactiveTintColor: "gray",
+          }}
+        >
+          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="CreateRecipe" component={CreateRecipe} />
+        </Tab.Navigator>
       </NavigationContainer>
-    </AuthContext.Provider>
+    </RecipeState>
   );
 }

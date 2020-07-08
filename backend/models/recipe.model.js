@@ -14,6 +14,7 @@ const recipeSchema = new Schema(
     kcal: { type: int, required: true },
     comment: [{ type: String, required: false }],
     photo: [{ type: String, required: true }],
+    likes: { type: int },
   },
   {
     timestamps: true,

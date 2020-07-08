@@ -1,0 +1,15 @@
+export const GET_USERS = "SEARCH_USERS";
+export const GET_USER = "SEARCH_USER";
+export const GET_RECIPE = "GET_RECIPE";
+export const ADD_RECIPE = "ADD_RECIPE";
+export const DELETE_RECIPE = "DELETE_RECIPE";
+export const SET_LOADING = "SET_LOADING";
+export const REMOVE_ALERT = "REMOVE_ALERT";
+export const AUTH_ERROR = "AUTH_ERROR";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAIL = "REGISTER_FAIL";
+export const USER_LOADED = "USER_LOADED";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const LOGOUT = "LOGOUT";
+export const CLEAR_ERRORS = "CLEAR_ERRORS";

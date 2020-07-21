@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Button,
   TextInput,
   TouchableOpacity,
   Platform,
   ScrollView,
-  Dimensions,
   KeyboardAvoidingView,
 } from "react-native";
 import {
@@ -16,25 +14,67 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-community/async-storage";
+import RecipeContext from "../../context/recipes/recipeContext";
 
 const Summary = (props) => {
   const [recipeTitle, setRecipeTitle] = useState("");
   const [summary, setSummary] = useState("");
-  const [servingCount, setServingCount] = useState(1);
-  const [cookingCount, setCookingCount] = useState(1);
+  const [servingCount, setServingCount] = useState();
+  const [cookingCount, setCookingCount] = useState();
 
-  const subServingCounter = () => {
-    setServingCount(servingCount - 1);
+  // const [state, setState] = useState({
+  //   recipeTitle: "",
+  //   summary: "",
+  //   servingCount: 0,
+  //   cookingCount: 0,
+  // });
+
+  const { summaryData } = useContext(RecipeContext);
+
+  const saveBtn = () => {
+    try {
+      summaryData(recipeTitle, summary, servingCount, cookingCount);
+    } catch (error) {
+      // Error saving data
+    }
   };
-  const addServingCounter = () => {
-    setServingCount(servingCount + 1);
-  };
-  const subCookingCounter = () => {
-    setCookingCount(cookingCount - 1);
-  };
-  const addCookingCounter = () => {
-    setCookingCount(cookingCount + 1);
-  };
+
+  useEffect(() => {
+    AsyncStorage.getItem("recipeTitle")
+      .then((value) => {
+        if (value !== null) {
+          setRecipeTitle(value);
+        }
+      })
+      .done();
+
+    AsyncStorage.getItem("summary")
+      .then((value) => {
+        if (value !== null) {
+          setSummary(value);
+        }
+      })
+      .done();
+
+    AsyncStorage.getItem("serveCounter")
+      .then((value) => {
+        //const val = parseInt(value, 10);
+        if (value !== null) {
+          setServingCount(value);
+        }
+      })
+      .done();
+
+    AsyncStorage.getItem("cookCounter")
+      .then((value) => {
+        if (value !== null) {
+          setCookingCount(value, 10);
+        }
+      })
+      .done();
+  }, []);
 
   const onHandleContinue = () => {};
 
@@ -48,11 +88,15 @@ const Summary = (props) => {
           <View style={styles.recipe}>
             <TextInput
               autoCapitalize="words"
+              editable={true}
               numberOfLines={2}
               placeholder="Recipe Name 🧐"
               style={styles.recipeText}
               value={recipeTitle}
-              onChangeText={(text) => setRecipeTitle(text)}
+              onChangeText={(text) => {
+                setRecipeTitle(text);
+                AsyncStorage.setItem("recipeTitle", text);
+              }}
             />
           </View>
           <View style={styles.summary}>
@@ -62,7 +106,10 @@ const Summary = (props) => {
               placeholder="Summary 📃"
               style={styles.summaryText}
               value={summary}
-              onChangeText={(text) => setSummary(text)}
+              onChangeText={(text) => {
+                setSummary(text);
+                AsyncStorage.setItem("summary", text);
+              }}
             />
           </View>
         </View>
@@ -70,46 +117,32 @@ const Summary = (props) => {
         <View style={styles.sc}>
           <View style={styles.servings}>
             <Text style={styles.servingstext}>Servings/People: </Text>
-            <View style={styles.servingsalign}>
-              <View style={styles.iValue}>
-                <Text style={styles.value}>{servingCount}</Text>
-              </View>
-
-              <TouchableOpacity onPress={subServingCounter}>
-                <View style={styles.subh}>
-                  <Text style={styles.sub}>-</Text>
-                </View>
-              </TouchableOpacity>
-
-              <Text style={styles.sub}>|</Text>
-              <TouchableOpacity onPress={addServingCounter}>
-                <View style={styles.subh}>
-                  <Text style={styles.sub}>+</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TextInput
+              style={styles.servingInput}
+              placeholder="Number"
+              keyboardType={"numeric"}
+              numeric
+              value={servingCount}
+              onChangeText={(text) => {
+                setServingCount(text);
+                AsyncStorage.setItem("serveCounter", text);
+              }}
+            />
           </View>
 
           <View style={styles.cooking}>
             <Text style={styles.servingstext}>Cooking time/Min: </Text>
-            <View style={styles.servingsalign}>
-              <View style={styles.iValue}>
-                <Text style={styles.value}>{cookingCount}</Text>
-              </View>
-
-              <TouchableOpacity onPress={subCookingCounter}>
-                <View style={styles.subh}>
-                  <Text style={styles.sub}>-</Text>
-                </View>
-              </TouchableOpacity>
-
-              <Text style={styles.sub}>|</Text>
-              <TouchableOpacity onPress={addCookingCounter}>
-                <View style={styles.subh}>
-                  <Text style={styles.sub}>+</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TextInput
+              style={styles.servingInput}
+              placeholder="Number"
+              keyboardType={"numeric"}
+              numeric
+              value={cookingCount}
+              onChangeText={(text) => {
+                setCookingCount(text);
+                AsyncStorage.setItem("cookCounter", text);
+              }}
+            />
           </View>
         </View>
 
@@ -119,11 +152,12 @@ const Summary = (props) => {
             <Text style={styles.uploadText}>Upload Image</Text>
           </View>
         </View>
-        <TouchableOpacity onPress={onHandleContinue}>
-          <View style={styles.contiuneBtn}>
-            <Text style={styles.contiuneText}>Save</Text>
-          </View>
-        </TouchableOpacity>
+
+        <View style={styles.addBtn}>
+          <TouchableOpacity onPress={saveBtn}>
+            <Entypo name="save" size={50} color="red" />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -145,11 +179,11 @@ const styles = StyleSheet.create({
   recipeText: {
     borderBottomWidth: 2,
     fontSize: 29,
-    borderColor: "red",
+    borderColor: "#e77f67",
   },
   summaryText: {
     borderBottomWidth: 2,
-    borderColor: "red",
+    borderColor: "#e77f67",
     fontSize: 29,
   },
   summary: {
@@ -173,11 +207,15 @@ const styles = StyleSheet.create({
   },
   servings: {
     borderBottomWidth: 2,
-    borderColor: "red",
+    borderColor: "#e77f67",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
+  servingInput: {
+    fontSize: 23,
+  },
+
   servingsalign: {
     flexDirection: "row",
     alignItems: "center",
@@ -197,19 +235,6 @@ const styles = StyleSheet.create({
     color: "red",
     fontWeight: "bold",
     fontSize: 23,
-  },
-  subh: {
-    width: wp("14%"),
-    height: hp("5"),
-    backgroundColor: "#dedede",
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-  },
-  sub: {
-    fontSize: 29,
-    fontWeight: "bold",
   },
 
   uploadContainer: {
@@ -237,6 +262,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
+  },
+  addBtn: {
+    alignItems: "flex-end",
+    shadowOpacity: 1.0,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: "black",
+    shadowRadius: 3,
   },
 });
 

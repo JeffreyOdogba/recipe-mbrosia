@@ -12,10 +12,10 @@ const Recipe = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <ScrollView horizontal={true}>
-          {recipes.map((item) => {
-            console.log(item);
-            return <RecipeCard recipe={item} />;
+        <Text style={styles.Nheader}>New Recipes</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {recipes.map((item, i) => {
+            return <RecipeCard key={i} recipe={item} />;
           })}
         </ScrollView>
       </View>
@@ -26,11 +26,14 @@ const Recipe = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 50,
-    backgroundColor: "gray",
     justifyContent: "center",
+    justifyContent: "flex-start",
   },
   card: {
     padding: 30,
+  },
+  Nheader: {
+    fontSize: 30,
   },
 });
 

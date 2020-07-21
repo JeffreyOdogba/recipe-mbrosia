@@ -14,11 +14,12 @@ import FooterMenu from "./patial-screen/FooterMenu";
 import { AntDesign } from "@expo/vector-icons";
 import AuthContext from "../context/auth/authContext";
 import Recipe from "../components/Recipe";
+import PopularRecipe from "../components/PopularRecipe";
 
 const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.logoutBtn}>
+      {/* <View style={styles.logoutBtn}>
         <TouchableOpacity
           onPress={async () => {
             await logout();
@@ -26,10 +27,9 @@ const Home = ({ navigation }) => {
         >
           <AntDesign name="login" size={30} color="red" />
         </TouchableOpacity>
-      </View>
-      <View style={styles.contentContainer}>
-        <Text>Home</Text>
-      </View>
+      </View> */}
+
+      <PopularRecipe />
       <Recipe />
 
       {/* <View style={styles.footer}>
@@ -42,11 +42,7 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
-  },
-  contentContainer: {
-    flex: 50,
-    backgroundColor: "pink",
+    // paddingTop: Constants.statusBarHeight,
   },
   logoutBtn: {
     alignItems: "flex-end",

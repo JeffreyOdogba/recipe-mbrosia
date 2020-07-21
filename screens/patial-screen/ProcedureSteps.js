@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 
+import AsyncStorage from "@react-native-community/async-storage";
+
 const ProcedureSteps = (props) => {
   return (
     <View style={styles.container}>
@@ -17,8 +19,12 @@ const ProcedureSteps = (props) => {
           style={styles.stylesText}
           multiline={true}
           numberOfLines={1}
+          value={props.Textvalue}
           placeholder={`Enter Procedure Steps ${props.step}`}
-        ></TextInput>
+          onChangeText={(text) => {
+            props.onChangeText(text);
+          }}
+        />
       </View>
     </View>
   );

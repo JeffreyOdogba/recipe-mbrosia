@@ -1,22 +1,24 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Dimensions,
+} from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const RecipeCard = ({ recipe }) => {
+const PopularRecipeCarousel = ({ recipe }) => {
   const { id, recipeTitle, creator, photo } = recipe;
 
   return (
     <View style={styles.card}>
-      <ImageBackground
-        style={styles.image}
-        borderRadius={10}
-        source={photo}
-      ></ImageBackground>
+      <ImageBackground style={styles.image} borderRadius={10} source={photo} />
       <View style={styles.textBox}>
         <Text style={styles.textTitle}>{recipeTitle}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MaterialCommunityIcons name="face-profile" size={30} color="green" />
+          <MaterialCommunityIcons name="face-profile" size={30} color="black" />
           <Text style={styles.text}>
             {creator.charAt(0).toUpperCase() + creator.slice(1)}
           </Text>
@@ -28,15 +30,14 @@ const RecipeCard = ({ recipe }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 300,
-    height: 200,
+    width: 350,
+    height: 230,
     justifyContent: "flex-end",
-    margin: 5,
   },
   image: {
     flex: 1,
-    width: 300,
-    height: 200,
+    width: 350,
+    height: 230,
     opacity: 0.9,
   },
   textTitle: {
@@ -55,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RecipeCard;
+export default PopularRecipeCarousel;

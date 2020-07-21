@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -13,10 +13,24 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
+import RecipeContext from "../../context/recipes/recipeContext";
+
 var width = Dimensions.get("window").width;
 var height = Dimensions.get("window").height;
 
 const IngredientStep = (props) => {
+  // const saveContext = useContext(RecipeContext);
+  const [ingredient, setIngredient] = useState("");
+
+  // const { save } = saveContext;
+
+  // const IngredientInfo = {
+  //   steps: props.step,
+  //   ingredient: [...ingredient],
+  // };
+  // useEffect(() => {
+  //   console.log(IngredientInfo);
+  // });
   return (
     <View style={styles.container}>
       <View style={styles.stepContent}>
@@ -25,6 +39,9 @@ const IngredientStep = (props) => {
           multiline={true}
           numberOfLines={1}
           placeholder={`Enter Spice ${props.step}`}
+          onChangeText={(text) => {
+            setIngredient(text);
+          }}
         ></TextInput>
       </View>
     </View>

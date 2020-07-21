@@ -2,17 +2,15 @@ import React, { useReducer } from "react";
 import axios from "axios";
 import RecipeContext from "./recipeContext";
 import recipeReducer from "./recipeReducer";
-import { ADD_RECIPE, DELETE_RECIPE, GET_RECIPE } from "../types";
-
-const food1 = require("../../assets/food1.jpg");
-const food2 = require("../../assets/food2.jpg");
+import { ADD_RECIPE, DELETE_RECIPE, GET_RECIPE, SAVE_RECIPE } from "../types";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const RecipeState = (props) => {
   const initialState = {
     recipes: [
       {
         recipeTitle: "Suya Meat",
-        creator: "great",
+        creator: "Jewel Odogba",
         summary: "The is Nigerian best Suya for refreshment",
         ingredients: ["pepper", "beef", "water", "oil", "sticks", "onion"],
         procedure: [
@@ -25,7 +23,7 @@ const RecipeState = (props) => {
         servings: 4,
         kcal: 150,
         comment: ["So lovely", "I followed your steps but its too spicy"],
-        photo: [food1],
+        photo: require("../../assets/food1.jpg"),
         likes: 30,
       },
       {
@@ -45,8 +43,28 @@ const RecipeState = (props) => {
           "its not originated from Nigerian",
           "I followed your steps but its too spicy",
         ],
-        photo: [food2],
+        photo: require("../../assets/food2.jpg"),
         likes: 400,
+      },
+      {
+        recipeTitle: "Rice and Beans",
+        creator: "David Smith",
+        summary: "The is Ghana best!",
+        ingredients: ["pepper", "rice", "water", "oil", "tomato", "onion"],
+        procedure: [
+          "put some oil in the fry pan; let the oil heat up for 3 min",
+          "put in onions to fry",
+          "blah blah blah",
+        ],
+        cooktime: 30,
+        servings: 4,
+        kcal: 200,
+        comment: [
+          "its not originated from Nigerian",
+          "I followed your steps but its too spicy",
+        ],
+        photo: require("../../assets/food2.jpg"),
+        likes: 300,
       },
     ],
   };
@@ -54,17 +72,43 @@ const RecipeState = (props) => {
   const [state, dispatch] = useReducer(recipeReducer, initialState);
 
   // Add Recipe
+  const addRecipe = () => {};
 
   // Delete Recipe
 
   // Update Recipe
 
-  // Filter Recipe
+  // Collect Recipe
+
+  const collectIngredients = (data) => {
+    console.log();
+    console.log("---- State --- ");
+    console.log(JSON.stringify(data));
+    return data;
+  };
+  const summaryData = (recipeTitle, summary, servingCount, cookingCount) => {
+    console.log("---- summary --- ");
+    const data = {
+      name: recipeTitle,
+      desc: summary,
+      serving: servingCount,
+      cookingTime: cookingCount,
+    };
+    console.log(JSON.stringify(data));
+    return data;
+  };
+
+  const procedureData = (data) => {
+    console.log(JSON.stringify(data));
+  };
 
   return (
     <RecipeContext.Provider
       value={{
         recipes: state.recipes,
+        collectIngredients,
+        summaryData,
+        procedureData,
       }}
     >
       {props.children}

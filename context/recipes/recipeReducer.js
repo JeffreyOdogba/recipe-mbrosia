@@ -1,16 +1,14 @@
 import React, { useReducer } from "react";
 import { ADD_RECIPE, DELETE_RECIPE, GET_RECIPE, SAVE_RECIPE } from "../types";
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   switch (action.type) {
-    case SAVE_RECIPE:
+    case ADD_RECIPE:
       return {
         ...state,
-        ingredients: action.payload,
+        recipes: [...state.recipes, action.payload],
       };
+    default:
+      return state;
   }
-};
-
-export const initialState = {
-  ingredients: null,
 };

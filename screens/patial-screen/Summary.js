@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -15,68 +16,90 @@ import {
 } from "react-native-responsive-screen";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-community/async-storage";
-import RecipeContext from "../../context/recipes/recipeContext";
 
 const Summary = (props) => {
-  const [recipeTitle, setRecipeTitle] = useState("");
-  const [summary, setSummary] = useState("");
-  const [servingCount, setServingCount] = useState();
-  const [cookingCount, setCookingCount] = useState();
+  const [photo, setImage] = useState(null);
 
-  // const [state, setState] = useState({
-  //   recipeTitle: "",
-  //   summary: "",
-  //   servingCount: 0,
-  //   cookingCount: 0,
-  // });
+  const removeItem = (image) => {
+    //const newList = photo.filter((item) => item !== image);
+    setImage(null);
+    props.onChangeImage(photo);
+  };
 
-  const { summaryData } = useContext(RecipeContext);
-
-  const saveBtn = () => {
-    try {
-      summaryData(recipeTitle, summary, servingCount, cookingCount);
-    } catch (error) {
-      // Error saving data
+  const getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Allow access!");
+      }
+    }
+    if (Constants.platform.android) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Allow access!");
+      }
     }
   };
 
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+        base64: true,
+      });
+      if (!result.cancelled) {
+        setImage(result);
+        props.onChangeImage(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const saveImage = () => {
+    AsyncStorage.setItem("image", JSON.stringify(photo));
+    console.log(photo);
+    props.onChangeImage(photo);
+  };
+
   useEffect(() => {
-    AsyncStorage.getItem("recipeTitle")
+    //console.log(props.photo);
+    getPermissionAsync();
+
+    console.log(props.submit);
+    if (props.submit) {
+      AsyncStorage.removeItem("image")
+        .then((value) => {
+          if (value !== null) {
+            const arrayValue = JSON.parse(value);
+            setImage(arrayValue);
+            props.onChangeImage(arrayValue);
+          }
+        })
+        .done();
+    }
+
+    AsyncStorage.getItem("image")
       .then((value) => {
         if (value !== null) {
-          setRecipeTitle(value);
+          const arrayValue = JSON.parse(value);
+          setImage(arrayValue);
+          props.onChangeImage(arrayValue);
         }
       })
       .done();
 
-    AsyncStorage.getItem("summary")
-      .then((value) => {
-        if (value !== null) {
-          setSummary(value);
-        }
-      })
-      .done();
-
-    AsyncStorage.getItem("serveCounter")
-      .then((value) => {
-        //const val = parseInt(value, 10);
-        if (value !== null) {
-          setServingCount(value);
-        }
-      })
-      .done();
-
-    AsyncStorage.getItem("cookCounter")
-      .then((value) => {
-        if (value !== null) {
-          setCookingCount(value, 10);
-        }
-      })
-      .done();
+    try {
+    } catch (error) {}
   }, []);
-
-  const onHandleContinue = () => {};
 
   return (
     <KeyboardAvoidingView
@@ -90,12 +113,11 @@ const Summary = (props) => {
               autoCapitalize="words"
               editable={true}
               numberOfLines={2}
-              placeholder="Recipe Name 🧐"
+              placeholder="Recipe Name"
               style={styles.recipeText}
-              value={recipeTitle}
+              value={props.titleValue}
               onChangeText={(text) => {
-                setRecipeTitle(text);
-                AsyncStorage.setItem("recipeTitle", text);
+                props.onChangeTitle(text);
               }}
             />
           </View>
@@ -103,12 +125,11 @@ const Summary = (props) => {
             <TextInput
               multiline={true}
               numberOfLines={2}
-              placeholder="Summary 📃"
+              placeholder="Summary"
               style={styles.summaryText}
-              value={summary}
+              value={props.descriptionValue}
               onChangeText={(text) => {
-                setSummary(text);
-                AsyncStorage.setItem("summary", text);
+                props.onChangeDescription(text);
               }}
             />
           </View>
@@ -122,10 +143,9 @@ const Summary = (props) => {
               placeholder="Number"
               keyboardType={"numeric"}
               numeric
-              value={servingCount}
+              value={props.servingValue}
               onChangeText={(text) => {
-                setServingCount(text);
-                AsyncStorage.setItem("serveCounter", text);
+                props.onChangeServingCount(text);
               }}
             />
           </View>
@@ -137,27 +157,60 @@ const Summary = (props) => {
               placeholder="Number"
               keyboardType={"numeric"}
               numeric
-              value={cookingCount}
+              value={props.cookingValue}
               onChangeText={(text) => {
-                setCookingCount(text);
-                AsyncStorage.setItem("cookCounter", text);
+                props.onChangeCookingCount(text);
               }}
             />
           </View>
         </View>
 
+        <View style={styles.calorie}>
+          <Text style={styles.servingstext}>Calories: </Text>
+          <TextInput
+            style={styles.servingInput}
+            placeholder="Kcals"
+            keyboardType={"numeric"}
+            numeric
+            value={props.kcalsValue}
+            onChangeText={(text) => {
+              props.onChangeCookingCount(text);
+            }}
+          />
+        </View>
+
         <View style={styles.uploadContainer}>
           <View style={styles.plusIconContainer}>
-            <Ionicons name="ios-add-circle" size={50} color="red" />
-            <Text style={styles.uploadText}>Upload Image</Text>
+            <TouchableOpacity onPress={pickImage}>
+              <Ionicons name="ios-add-circle" size={50} color="red" />
+            </TouchableOpacity>
+
+            <View style={styles.imageFixCont}>
+              {photo && (
+                <View>
+                  <TouchableOpacity onPress={() => removeItem(photo)}>
+                    <MaterialIcons
+                      name="cancel"
+                      style={{}}
+                      size={25}
+                      color="red"
+                    />
+                  </TouchableOpacity>
+                  <Image source={{ uri: photo.uri }} style={styles.imageFix} />
+                </View>
+              )}
+            </View>
+            <TouchableOpacity onPress={saveImage}>
+              <Text style={styles.uploadText}>Upload Image</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.addBtn}>
+        {/* <View style={styles.addBtn}>
           <TouchableOpacity onPress={saveBtn}>
             <Entypo name="save" size={50} color="red" />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -166,7 +219,6 @@ const Summary = (props) => {
 const styles = StyleSheet.create({
   recipe: {
     marginVertical: 10,
-    justifyContent: "flex-end",
     ...Platform.select({
       android: {
         flex: 5,
@@ -187,7 +239,6 @@ const styles = StyleSheet.create({
     fontSize: 29,
   },
   summary: {
-    justifyContent: "flex-end",
     ...Platform.select({
       ios: {
         flex: 5,
@@ -198,8 +249,6 @@ const styles = StyleSheet.create({
     }),
   },
   sc: {
-    flex: 0.34,
-    marginVertical: 19,
     ...Platform.select({
       ios: {},
       android: {},
@@ -228,47 +277,45 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  iValue: {
-    right: 16,
-  },
-  value: {
-    color: "red",
-    fontWeight: "bold",
-    fontSize: 23,
+  calorie: {
+    paddingTop: 10,
+    fontSize: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 
   uploadContainer: {
-    flex: 0.9,
-    marginVertical: 10,
+    flex: 1,
+    marginTop: 10,
     backgroundColor: "#edd0ce",
     borderRadius: 13,
   },
   plusIconContainer: {
+    flex: 1,
     margin: 19,
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   uploadText: {
     fontSize: 20,
     color: "red",
   },
-  contiuneBtn: {
-    backgroundColor: "red",
-    justifyContent: "center",
-    marginVertical: 10,
-    alignItems: "center",
-    height: hp("7.4"),
-    borderRadius: 13,
-  },
-  contiuneText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-  },
+
   addBtn: {
     alignItems: "flex-end",
     shadowOpacity: 1.0,
     shadowOffset: { width: 1, height: 1 },
     shadowColor: "black",
     shadowRadius: 3,
+  },
+  imageFixCont: {
+    flexDirection: "row",
+  },
+  imageFix: {
+    width: 50,
+    height: 50,
+    margin: 5,
+    flexShrink: 1,
   },
 });
 

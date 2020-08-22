@@ -16,6 +16,7 @@
     "axios": "^0.19.2",
     "expo": "^38.0.0",
     "expo-constants": "~9.1.1",
+    "expo-image-picker": "~8.3.0",
     "react": "16.11.0",
     "react-devtools": "^4.7.0",
     "react-dom": "16.11.0",
@@ -27,6 +28,7 @@
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "3.0.2",
     "react-native-screens": "~2.9.0",
+    "react-native-uuid": "^1.4.9",
     "react-native-web": "~0.11.7"
   },
   "devDependencies": {

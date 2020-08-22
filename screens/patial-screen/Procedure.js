@@ -18,15 +18,19 @@ import ProcedureSteps from "./ProcedureSteps";
 import AsyncStorage from "@react-native-community/async-storage";
 import RecipeContext from "../../context/recipes/recipeContext";
 
-const Procedure = () => {
+const Procedure = (props) => {
   const [procedure, setProcedure] = useState([]);
   const [query, setQuery] = useState("");
 
   const { procedureData } = useContext(RecipeContext);
 
+  const publish = () => {
+    props.publish();
+  };
   const onSaveHandle = () => {
     try {
       AsyncStorage.setItem("procedure", JSON.stringify(procedure));
+      props.onChangeProcedures(procedure);
       procedureData({ procedure });
     } catch (error) {}
   };
@@ -62,6 +66,18 @@ const Procedure = () => {
         }
       })
       .done();
+
+    // if (props.submit) {
+    //   AsyncStorage.removeItem("procedure")
+    //     .then((value) => {
+    //       if (value !== null) {
+    //         const arrayValue = JSON.parse(value);
+    //         setProcedure(arrayValue);
+    //         // props.onChangeImage(arrayValue);
+    //       }
+    //     })
+    //     .done();
+    // }
   }, []);
 
   return (
@@ -85,19 +101,12 @@ const Procedure = () => {
               key={item.id}
               onPress={() => seletedValued(item.value, item.id)}
             >
-              <View style={styles.items} key={item.id}>
-                <Text style={styles.itemText} key={item.id}>
-                  {item.value}
-                </Text>
+              <View style={styles.items}>
+                <Text style={styles.itemText}>{item.value}</Text>
               </View>
             </TouchableOpacity>
           ))}
         </View>
-        {/* <TouchableOpacity onPress={onSaveHandle}>
-          <View style={styles.contiuneBtn}>
-            <Text style={styles.contiuneText}>Save</Text>
-          </View>
-        </TouchableOpacity> */}
       </ScrollView>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -106,6 +115,12 @@ const Procedure = () => {
             <Entypo name="save" size={50} color="red" />
           </TouchableOpacity>
         </View>
+        <View style={styles.publishCt}>
+          <TouchableOpacity onPress={publish}>
+            <Text style={styles.publishBtn}>Publish</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.addBtn}>
           <TouchableOpacity
             onPress={() => {
@@ -136,19 +151,7 @@ const styles = StyleSheet.create({
   contentStep: {
     paddingTop: 28,
   },
-  contiuneBtn: {
-    backgroundColor: "red",
-    justifyContent: "center",
-    marginVertical: 10,
-    alignItems: "center",
-    height: hp("7.4"),
-    borderRadius: 13,
-  },
-  contiuneText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-  },
+
   stylesText: {
     borderBottomWidth: 2,
     borderColor: "red",
@@ -166,6 +169,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     borderColor: "#e77f67",
+  },
+  publishCt: {
+    backgroundColor: "red",
+    borderRadius: 10,
+    padding: 10,
+    height: 50,
+  },
+  publishBtn: {
+    fontSize: 20,
+    color: "white",
   },
 });
 export default Procedure;

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, Image } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -13,12 +13,15 @@ const RecipeCard = ({ recipe }) => {
         borderRadius={10}
         source={photo}
       ></ImageBackground>
+      {/* <Image source={photo} style={styles.image} borderRadius={10} /> */}
       <View style={styles.textBox}>
         <Text style={styles.textTitle}>{recipeTitle}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <MaterialCommunityIcons name="face-profile" size={30} color="green" />
           <Text style={styles.text}>
-            {creator.charAt(0).toUpperCase() + creator.slice(1)}
+            {creator
+              ? creator.charAt(0).toUpperCase() + creator.slice(1)
+              : "Fix When Logged in"}
           </Text>
         </View>
       </View>

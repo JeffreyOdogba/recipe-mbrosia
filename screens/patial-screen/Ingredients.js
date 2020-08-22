@@ -20,7 +20,7 @@ import IngredientStep from "./IngredientSteps";
 import AsyncStorage from "@react-native-community/async-storage";
 import RecipeContext from "../../context/recipes/recipeContext";
 
-const Ingredients = () => {
+const Ingredients = (props) => {
   const saveContext = useContext(RecipeContext);
   const [query, setQuery] = useState("");
   const [itemingredient, setItemingredient] = useState([]);
@@ -31,7 +31,7 @@ const Ingredients = () => {
     setItemingredient([
       ...itemingredient,
       {
-        id: itemingredient.length,
+        id: itemingredient.length + 1,
         value: query,
       },
     ]);
@@ -41,7 +41,9 @@ const Ingredients = () => {
   const saveBtn = () => {
     try {
       // console.log(itemingredient);
+
       AsyncStorage.setItem("itemingredient", JSON.stringify(itemingredient));
+      props.onChangeIngredients(itemingredient);
       collectIngredients({ itemingredient });
     } catch (error) {
       // Error saving data
@@ -67,6 +69,18 @@ const Ingredients = () => {
           }
         })
         .done();
+
+      // if (props.submit) {
+      //   AsyncStorage.removeItem("itemingredient")
+      //     .then((value) => {
+      //       if (value !== null) {
+      //         const arrayValue = JSON.parse(value);
+      //         setItemingredient(arrayValue);
+      //         // props.onChangeImage(arrayValue);
+      //       }
+      //     })
+      //     .done();
+      // }
     } catch (error) {}
   }, []);
 
@@ -90,6 +104,13 @@ const Ingredients = () => {
             </View>
           </View>
         </View>
+
+        {itemingredient.length > 0 ? (
+          <Text style={{ color: "gray", fontSize: 19 }}>
+            Tap to delete a previous Spice or enter a new Spice then add it and
+            save:
+          </Text>
+        ) : null}
 
         {itemingredient.map((item) => (
           <TouchableOpacity key={item.id} onPress={() => removeItem(item.id)}>
@@ -123,7 +144,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   items: {
-    flexDirection: "row",
     marginBottom: 5,
   },
   itemText: {

@@ -11,6 +11,7 @@ import LoginDialog from "./screens/patial-screen/LoginForm";
 import Home from "./screens/Home";
 import CreateRecipe from "./screens/CreateRecipe";
 import RecipeState from "./context/recipes/RecipeState";
+import Pantry from "./screens/Pantry";
 
 import Ingredients from "./screens/patial-screen/Ingredients";
 import AuthState from "./context/auth/authState";
@@ -30,10 +31,53 @@ import {
 } from "./context/types";
 
 import { Ionicons } from "@expo/vector-icons";
+import PantryModel from "./screens/patial-screen/PantryModel";
 
+const RootStack = createStackNavigator();
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+function ModelStack() {
+  return (
+    <Stack.Navigator mode="modal" headerMode="float">
+      <Stack.Screen
+        name="ModelStack"
+        options={{ title: "Create Pantry" }}
+        component={PantryModel}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function TabStack() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "ios-home" : "ios-home";
+          } else if (route.name === "CreateRecipe") {
+            iconName = focused ? "ios-restaurant" : "ios-restaurant";
+          } else if (route.name === "Pantry") {
+            iconName = focused ? "ios-ice-cream" : "ios-ice-cream";
+          }
+
+          return <Ionicons name={iconName} size={32} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: "tomato",
+        inactiveTintColor: "gray",
+      }}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Pantry" component={Pantry} />
+      <Tab.Screen name="CreateRecipe" component={CreateRecipe} />
+    </Tab.Navigator>
+  );
+}
 export default function App({ navigation }) {
   // const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -133,28 +177,10 @@ export default function App({ navigation }) {
   return (
     <RecipeState>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-
-              if (route.name === "Home") {
-                iconName = focused ? "ios-home" : "ios-home";
-              } else if (route.name === "CreateRecipe") {
-                iconName = focused ? "ios-restaurant" : "ios-restaurant";
-              }
-
-              return <Ionicons name={iconName} size={32} color={color} />;
-            },
-          })}
-          tabBarOptions={{
-            activeTintColor: "tomato",
-            inactiveTintColor: "gray",
-          }}
-        >
-          <Tab.Screen name="Home" component={Home} />
-          <Tab.Screen name="CreateRecipe" component={CreateRecipe} />
-        </Tab.Navigator>
+        <RootStack.Navigator mode="modal" headerMode="none">
+          <RootStack.Screen name="TabStack" component={TabStack} />
+          <RootStack.Screen name="ModelStack" component={ModelStack} />
+        </RootStack.Navigator>
       </NavigationContainer>
     </RecipeState>
   );

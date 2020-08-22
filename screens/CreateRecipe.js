@@ -41,15 +41,11 @@ const CreateRecipe = ({ navigation }) => {
               <Text style={styles.textHeader}>Create Recipe</Text>
             </View>
 
-            <View style={styles.tab}>
-              <Tabbar navigation={navigation} />
-            </View>
+            {/* <View style={styles.tab}> */}
+            <Tabbar navigation={navigation} />
+            {/* </View> */}
           </View>
         </TouchableWithoutFeedback>
-
-        {/* <View style={styles.footer}>
-          <FooterMenu navigation={navigation} />
-        </View> */}
       </View>
     </KeyboardAvoidingView>
   );

@@ -4,6 +4,7 @@ import RecipeContext from "./recipeContext";
 import recipeReducer from "./recipeReducer";
 import { ADD_RECIPE, DELETE_RECIPE, GET_RECIPE, SAVE_RECIPE } from "../types";
 import AsyncStorage from "@react-native-community/async-storage";
+import { Platform } from "react-native";
 
 const RecipeState = (props) => {
   const initialState = {
@@ -13,7 +14,7 @@ const RecipeState = (props) => {
         creator: "Jewel Odogba",
         summary: "The is Nigerian best Suya for refreshment",
         ingredients: ["pepper", "beef", "water", "oil", "sticks", "onion"],
-        procedure: [
+        procedures: [
           "put some oil in the fry pan; let the oil heat up for 3 min",
           "put in onions to fry",
           "boils the beef so it can be tender 10 min",
@@ -31,7 +32,7 @@ const RecipeState = (props) => {
         creator: "nationggreat",
         summary: "The is Nigerian best rice remedy",
         ingredients: ["pepper", "rice", "water", "oil", "tomato", "onion"],
-        procedure: [
+        procedures: [
           "put some oil in the fry pan; let the oil heat up for 3 min",
           "put in onions to fry",
           "blah blah blah",
@@ -51,7 +52,7 @@ const RecipeState = (props) => {
         creator: "David Smith",
         summary: "The is Ghana best!",
         ingredients: ["pepper", "rice", "water", "oil", "tomato", "onion"],
-        procedure: [
+        procedures: [
           "put some oil in the fry pan; let the oil heat up for 3 min",
           "put in onions to fry",
           "blah blah blah",
@@ -72,7 +73,46 @@ const RecipeState = (props) => {
   const [state, dispatch] = useReducer(recipeReducer, initialState);
 
   // Add Recipe
-  const addRecipe = () => {};
+  const addRecipe = async (recipe) => {
+    try {
+      const data = new FormData();
+
+      const uri =
+        Platform.OS === "android"
+          ? recipe.photo
+          : recipe.photo.replace("file://", "");
+
+      data.append("recipeTitle", recipe.recipeTitle);
+      data.append("description", recipe.description);
+      data.append("servings", recipe.servings);
+      data.append("cooktime", recipe.cooktime);
+      data.append("ingredients", JSON.stringify(recipe.ingredients));
+      data.append("procedures", JSON.stringify(recipe.procedures));
+      data.append("photo", {
+        uri: uri.uri,
+        type: "image/jpeg",
+        name: uri.fileName || uri.uri.substr(uri.uri.lastIndexOf("/") + 1),
+      });
+
+      const config = {
+        method: "POST",
+
+        body: data,
+      };
+      fetch("http://10.0.0.61:5000/api/recipe/addrecipe", config)
+        .then((checkStatusAndGetJSONResponse) => {
+          console.log(checkStatusAndGetJSONResponse);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      dispatch({ type: ADD_RECIPE, payload: recipe });
+
+      console.log("---Publish Data----");
+      console.log(JSON.stringify(data));
+    } catch (error) {}
+  };
 
   // Delete Recipe
 
@@ -80,35 +120,18 @@ const RecipeState = (props) => {
 
   // Collect Recipe
 
-  const collectIngredients = (data) => {
-    console.log();
-    console.log("---- State --- ");
-    console.log(JSON.stringify(data));
-    return data;
-  };
-  const summaryData = (recipeTitle, summary, servingCount, cookingCount) => {
-    console.log("---- summary --- ");
-    const data = {
-      name: recipeTitle,
-      desc: summary,
-      serving: servingCount,
-      cookingTime: cookingCount,
-    };
-    console.log(JSON.stringify(data));
-    return data;
-  };
-
   const procedureData = (data) => {
-    console.log(JSON.stringify(data));
+    const procedure = JSON.stringify(data);
+    console.log(procedure);
+    return { procedure };
   };
 
   return (
     <RecipeContext.Provider
       value={{
         recipes: state.recipes,
-        collectIngredients,
-        summaryData,
         procedureData,
+        addRecipe,
       }}
     >
       {props.children}

@@ -54,8 +54,8 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.post(
-        // "http://192.168.2.225:5000/api/user/signup"
-        "http://192.168.2.161:5000/api/user/signup",
+        // "http://192.168.2.225:5000/api/user/signup" //wifi
+        "http://192.168.2.161:5000/api/user/signup", //lan
         formData,
         config
       );
